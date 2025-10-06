@@ -1,108 +1,366 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Índice de Videos de Instagram</title>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f0f0f0;
-        margin: 0;
-        padding: 20px;
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>RSTV Social Dance — Bailes</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <meta name="description" content="Galería de bailes — RSTV Social Dance" />
+
+  <style>
+    /* -------------------------
+       Reset + base
+       ------------------------- */
+    :root{
+      --bg1: #0f1724;
+      --bg2: #0b1220;
+      --card: rgba(255,255,255,0.04);
+      --glass: rgba(255,255,255,0.06);
+      --accent: #ff5a7c;
+      --accent-2: #ff9c5b;
+      --muted: rgba(255,255,255,0.7);
+      --max-width: 1200px;
+      --radius: 14px;
+      --shadow: 0 6px 20px rgba(2,6,23,0.6);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg,var(--bg1), var(--bg2));
+      color: #fff;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.4;
+      padding:32px 16px;
+      display:flex;
+      justify-content:center;
     }
 
-    h1 {
-        text-align: center;
-        color: #333;
+    /* -------------------------
+       Layout container
+       ------------------------- */
+    .container{
+      width:100%;
+      max-width:var(--max-width);
+      margin:0 auto;
     }
 
-    .container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
+    /* -------------------------
+       Header / Hero
+       ------------------------- */
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:28px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+    .logo{
+      width:56px;height:56px;border-radius:12px;
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      display:flex;align-items:center;justify-content:center;
+      font-weight:700;font-size:20px;box-shadow:var(--shadow);
+    }
+    .title h1{margin:0;font-size:20px;letter-spacing:0.2px}
+    .title p{margin:0;color:var(--muted);font-size:13px}
+
+    nav .btn{
+      background:transparent;border:1px solid rgba(255,255,255,0.08);
+      padding:10px 14px;border-radius:10px;color:inherit;cursor:pointer;
+      backdrop-filter: blur(6px);
+    }
+    nav .btn.primary{
+      background:linear-gradient(90deg,var(--accent),var(--accent-2));
+      border:none;color:#09121b;font-weight:600;
+      box-shadow: 0 6px 18px rgba(255,90,124,0.12);
     }
 
-    .video-list {
-        flex: 1 1 200px;
-        max-width: 300px;
-        background-color: #fff;
-        border-radius: 8px;
-        padding: 15px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    /* -------------------------
+       Hero banner
+       ------------------------- */
+    .hero{
+      display:grid;
+      grid-template-columns: 1fr auto;
+      gap:20px;
+      align-items:center;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius: var(--radius);
+      padding:22px;
+      box-shadow: var(--shadow);
+      margin-bottom:24px;
+    }
+    .hero-left h2{margin:0;font-size:26px}
+    .hero-left p{margin:8px 0 0;color:var(--muted)}
+    .hero-right{
+      display:flex;flex-direction:column;gap:8px;
+      align-items:center;justify-content:center;
+    }
+    .cta-small{font-size:13px;color:var(--muted)}
+
+    /* -------------------------
+       Grid of videos
+       ------------------------- */
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:18px;
+    }
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:12px;
+      overflow:hidden;
+      box-shadow: 0 6px 18px rgba(2,6,23,0.55);
+      transition: transform .25s ease, box-shadow .25s ease;
+      cursor:pointer;
+    }
+    .card:hover{ transform: translateY(-6px); box-shadow: 0 18px 40px rgba(2,6,23,0.65) }
+
+    .thumb{
+      position:relative;
+      aspect-ratio:16/9;
+      background-size:cover;
+      background-position:center;
+    }
+    .play{
+      position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+      width:60px;height:60px;border-radius:50%;
+      background:linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.25));
+      display:flex;align-items:center;justify-content:center;
+      border:2px solid rgba(255,255,255,0.06);
+    }
+    .play svg{width:28px;height:28px;fill:white;margin-left:4px}
+
+    .card-body{padding:12px}
+    .card-title{font-weight:600;margin:0 0 6px 0}
+    .card-sub{font-size:13px;color:var(--muted);margin:0}
+
+    /* -------------------------
+       Modal (lightbox)
+       ------------------------- */
+    .modal{
+      position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+      background:rgba(4,6,12,0.6);backdrop-filter: blur(6px);
+      z-index:9999;padding:24px;opacity:0;pointer-events:none;transition:opacity .18s ease;
+    }
+    .modal.open{opacity:1;pointer-events:auto}
+    .modal-inner{
+      width:100%;max-width:960px;border-radius:12px;overflow:hidden;background:#071021;
+    }
+    .modal-inner iframe, .modal-inner video{
+      width:100%;height:56vw; max-height:600px;border:0;display:block;background:#000;
+    }
+    .modal-close{
+      position:absolute;right:20px;top:20px;background:rgba(0,0,0,0.4);
+      border-radius:10px;padding:8px;border:1px solid rgba(255,255,255,0.06);cursor:pointer;
     }
 
-    .video-list h2 {
-        font-size: 18px;
-        margin-bottom: 10px;
+    /* -------------------------
+       Responsive
+       ------------------------- */
+    @media (max-width:980px){
+      .grid{grid-template-columns: repeat(2,1fr)}
+      .hero{grid-template-columns:1fr}
+    }
+    @media (max-width:560px){
+      header{flex-direction:column;align-items:flex-start;gap:12px}
+      .grid{grid-template-columns:1fr}
+      .hero-left h2{font-size:20px}
+      .modal-inner iframe, .modal-inner video{height:60vw}
     }
 
-    .video-list ul {
-        list-style: none;
-        padding: 0;
-    }
-
-    .video-list li {
-        margin-bottom: 10px;
-        cursor: pointer;
-        color: #0077cc;
-        transition: color 0.2s;
-    }
-
-    .video-list li:hover {
-        color: #005fa3;
-    }
-
-    .video-display {
-        flex: 2 1 500px;
-        max-width: 800px;
-        background-color: #fff;
-        border-radius: 8px;
-        padding: 15px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    iframe {
-        width: 100%;
-        height: 450px;
-        border: none;
-        border-radius: 8px;
-    }
-</style>
+    /* small helper */
+    .muted{color:var(--muted);font-size:13px}
+  </style>
 </head>
 <body>
+  <div class="container">
 
-<h1>Índice de Videos de Instagram</h1>
+    <!-- Header -->
+    <header>
+      <div class="brand">
+        <div class="logo">RS</div>
+        <div class="title">
+          <h1>RSTV Social Dance</h1>
+          <p class="muted">Bailes, reels y más — comparte tu movimiento</p>
+        </div>
+      </div>
 
-<div class="container">
-    <div class="video-list">
-        <h2>Lista de Videos</h2>
-        <ul id="videoList">
-            <li data-url="https://www.instagram.com/reel/DPW4ljYgH0x/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==">Video 1</li>
-            <li data-url="https://www.instagram.com/p/CsYYYYYY/embed/">Video 2</li>
-            <li data-url="https://www.instagram.com/p/CsZZZZZZ/embed/">Video 3</li>
-        </ul>
+      <nav>
+        <button class="btn">Acerca</button>
+        <button class="btn primary" id="uploadBtn">Subir baile</button>
+      </nav>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-left">
+        <h2 id="hero-title">Tu espacio para los mejores reels</h2>
+        <p class="muted">Galería moderna para mostrar tus bailes con estilo — compatible con Instagram embeds y reproductor nativo.</p>
+      </div>
+      <div class="hero-right">
+        <div class="cta-small muted">Sugerencia: usa miniaturas atractivas</div>
+        <div style="height:12px"></div>
+        <button class="btn primary" id="exploreBtn">Explorar bailes</button>
+      </div>
+    </section>
+
+    <!-- Grid: reemplaza las tarjetas con tus datos -->
+    <main>
+      <div class="grid" id="gallery">
+
+        <!-- Card 1: ejemplo con video local -->
+        <article class="card" tabindex="0" data-type="video" data-src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4">
+          <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1519677100203-a0e668c92439?q=80&w=1400&auto=format&fit=crop&ixlib=rb-4.0.3&s=3c3d3b9ee1b5f0b7d2a94a0f8b6b3f8f');">
+            <div class="play" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
+            </div>
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">Estilo callejero — 1</h3>
+            <p class="card-sub">30s · Coreografía urbana</p>
+          </div>
+        </article>
+
+        <!-- Card 2: ejemplo con Instagram embed (usaremos url pública) -->
+        <!-- data-src debe ser la URL pública del post de Instagram (ej: https://www.instagram.com/p/XXXXX/embed) -->
+        <article class="card" tabindex="0" data-type="iframe" data-src="https://www.instagram.com/p/CmXxXxXxXxX/embed">
+          <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1511988617509-a57c8a288659?q=80&w=1400&auto=format&fit=crop');">
+            <div class="play" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
+            </div>
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">Reel Instagram — Ejemplo</h3>
+            <p class="card-sub">Embed desde Instagram</p>
+          </div>
+        </article>
+
+        <!-- Card 3: ejemplo otro video -->
+        <article class="card" tabindex="0" data-type="video" data-src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm">
+          <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1520975698516-6ea1a1d4c9a9?q=80&w=1400&auto=format&fit=crop');">
+            <div class="play" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
+            </div>
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">Cumbia fusión — 3</h3>
+            <p class="card-sub">45s · Pareja</p>
+          </div>
+        </article>
+
+        <!-- Añade más tarjetas aquí -->
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Modal (lightbox) -->
+  <div class="modal" id="modal" aria-hidden="true" role="dialog" aria-label="Reproductor">
+    <div class="modal-inner" role="document">
+      <!-- Aquí se inyecta iframe o video por JS -->
+      <div id="playerWrap" style="background:#000;color:#fff;min-height:200px;display:flex;align-items:center;justify-content:center;padding:12px;">
+        <div class="muted">Cargando...</div>
+      </div>
     </div>
+    <button class="modal-close" id="closeModal" aria-label="Cerrar">✕</button>
+  </div>
 
-    <div class="video-display" id="videoDisplay">
-        <p>Selecciona un video de la lista para verlo aquí.</p>
-    </div>
-</div>
+  <script>
+    // -------------------------
+    // Interactividad: abrir modal y cargar video/iframe
+    // -------------------------
+    (function(){
+      const gallery = document.getElementById('gallery');
+      const modal = document.getElementById('modal');
+      const playerWrap = document.getElementById('playerWrap');
+      const closeModal = document.getElementById('closeModal');
 
-<script>
-    const videoList = document.getElementById('videoList');
-    const videoDisplay = document.getElementById('videoDisplay');
-
-    videoList.addEventListener('click', (e) => {
-        if(e.target.tagName === 'LI') {
-            const url = e.target.getAttribute('data-url');
-            videoDisplay.innerHTML = <iframe src="${url}" allowfullscreen></iframe>;
+      function openModal(type, src){
+        // vaciar player
+        playerWrap.innerHTML = '';
+        if(type === 'video'){
+          const v = document.createElement('video');
+          v.controls = true;
+          v.autoplay = true;
+          v.playsInline = true;
+          v.src = src;
+          v.style.maxHeight = '600px';
+          playerWrap.appendChild(v);
+        } else {
+          // iframe (ej: instagram embed)
+          const iframe = document.createElement('iframe');
+          iframe.src = src;
+          iframe.allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture";
+          iframe.style.border = '0';
+          iframe.style.width = '100%';
+          iframe.style.height = '56vw';
+          iframe.setAttribute('loading','lazy');
+          playerWrap.appendChild(iframe);
         }
-    });
-</script>
+        modal.classList.add('open');
+        modal.setAttribute('aria-hidden','false');
+      }
+
+      function close(){
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden','true');
+        // detener video / limpiar iframe
+        playerWrap.innerHTML = '<div class="muted">Cerrando...</div>';
+      }
+
+      // click en tarjeta
+      gallery.addEventListener('click', (e) => {
+        const card = e.target.closest('.card');
+        if(!card) return;
+        const type = card.dataset.type;
+        const src = card.dataset.src;
+        if(!src) return alert('Falta data-src en la tarjeta.');
+        openModal(type, src);
+      });
+
+      // accesibilidad: permitir enter en tarjeta
+      gallery.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter'){
+          const card = e.target.closest('.card');
+          if(!card) return;
+          const type = card.dataset.type;
+          const src = card.dataset.src;
+          if(!src) return;
+          openModal(type, src);
+        }
+      });
+
+      // cerrar
+      closeModal.addEventListener('click', close);
+      modal.addEventListener('click', (e) => {
+        if(e.target === modal) close();
+      });
+      document.addEventListener('keydown', (e) => {
+        if(e.key === 'Escape' && modal.classList.contains('open')) close();
+      });
+
+      // botones del header (ejemplo)
+      document.getElementById('uploadBtn').addEventListener('click', ()=> {
+        alert('Función subir: implementa tu formulario o conecta a un CMS (ej. Netlify, Vercel + formulario).');
+      });
+      document.getElementById('exploreBtn').addEventListener('click', ()=> {
+        window.scrollTo({top: document.getElementById('gallery').offsetTop - 20, behavior: 'smooth'});
+      });
+
+    })();
+  </script>
+</body>
+</html>
 
 </body>
 </html>
