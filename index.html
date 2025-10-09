@@ -116,54 +116,62 @@ h1 {
   <div class="button" data-key="F">F</div>
 </div>
 
+<!-- Música de fondo -->
+<audio id="music" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" loop></audio>
+
 <script>
 const moves = ['A','S','D','F'];
 let sequence = [];
 let userInput = [];
+let round = 1;
 const maxSteps = 20;
 
 const payasitaHead = document.getElementById('payasita-head');
 const camaramanBody = document.querySelector('#camaraman .body');
 const buttons = document.querySelectorAll('.button');
 
+const music = document.getElementById('music');
+music.play().catch(()=>{}); // iniciar música
+
 function nextRound() {
   userInput = [];
-  if(sequence.length < maxSteps){
-    sequence.push(moves[Math.floor(Math.random()*moves.length)]);
-  }
+  const minSteps = 3;
+  const maxLength = Math.min(minSteps + round -1, maxSteps);
+  const length = Math.floor(Math.random() * (maxLength - minSteps + 1)) + minSteps;
+  sequence = Array.from({length}, () => moves[Math.floor(Math.random()*moves.length)]);
+  round++;
   playSequence();
 }
 
 function playSequence() {
   let i=0;
+  const baseSpeed = 1000; // ms entre pasos
+  const speed = baseSpeed; // más lento para que se vea bien al inicio
+
   const interval = setInterval(()=>{
     const key = sequence[i];
-    // iluminar botón correspondiente
     const btn = document.querySelector(`.button[data-key="${key}"]`);
     btn.classList.add('active');
-    // animación payasita
     payasitaHead.classList.add('dance');
     setTimeout(()=>{
       btn.classList.remove('active');
       payasitaHead.classList.remove('dance');
-    },400);
+    }, 400);
     i++;
     if(i>=sequence.length) clearInterval(interval);
-  },700);
+  }, speed);
 }
 
-// Manejo de botones táctiles
 buttons.forEach(btn => {
   btn.addEventListener('touchstart',()=>{
     handleInput(btn.dataset.key);
   });
-  btn.addEventListener('click',()=>{ // también funciona en desktop
+  btn.addEventListener('click',()=>{
     handleInput(btn.dataset.key);
   });
 });
 
 function handleInput(key){
-  // animación camaraman
   const btn = document.querySelector(`.button[data-key="${key}"]`);
   btn.classList.add('active');
   camaramanBody.classList.add('dance');
@@ -174,13 +182,11 @@ function handleInput(key){
 
   userInput.push(key);
 
-  // verificar error
   if(userInput[userInput.length-1] !== sequence[userInput.length-1]){
     payasitaHead.classList.add('shake');
     setTimeout(()=>payasitaHead.classList.remove('shake'),400);
     setTimeout(()=>nextRound(),1000);
   } else if(userInput.length === sequence.length){
-    // acierto toda la secuencia
     payasitaHead.classList.add('dance');
     camaramanBody.classList.add('dance');
     setTimeout(()=>{
