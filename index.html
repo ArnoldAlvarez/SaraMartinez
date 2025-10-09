@@ -123,8 +123,6 @@ h1 {
 const moves = ['A','S','D','F'];
 let sequence = [];
 let userInput = [];
-let round = 1;
-const maxSteps = 20;
 
 const payasitaHead = document.getElementById('payasita-head');
 const camaramanBody = document.querySelector('#camaraman .body');
@@ -139,48 +137,42 @@ const sounds = {
   F: new Audio('https://freesound.org/data/previews/341/341698_6244410-lq.mp3')
 };
 
-// Iniciar música al cargar
+// iniciar música
 music.play().catch(()=>{});
 
-function nextRound() {
-  userInput = [];
-  const minSteps = 3;
-  const maxLength = Math.min(minSteps + round -1, maxSteps);
-  const length = Math.floor(Math.random() * (maxLength - minSteps + 1)) + minSteps;
-  sequence = Array.from({length}, () => moves[Math.floor(Math.random()*moves.length)]);
-  round++;
-  playSequence();
+// generar siguiente paso
+function addStep() {
+  const key = moves[Math.floor(Math.random()*moves.length)];
+  sequence.push(key);
 }
 
+// mostrar secuencia
 function playSequence() {
   let i=0;
-  const baseSpeed = 1000;
-  const speed = baseSpeed;
+  const speed = 1000; // ms entre pasos
 
   const interval = setInterval(()=>{
     const key = sequence[i];
     const btn = document.querySelector(`.button[data-key="${key}"]`);
     btn.classList.add('active');
     payasitaHead.classList.add('dance');
-    // sonido del paso
+
+    // reproducir sonido
     sounds[key].currentTime = 0;
     sounds[key].play();
+
     setTimeout(()=>{
       btn.classList.remove('active');
       payasitaHead.classList.remove('dance');
-    }, 400);
+    },400);
+
     i++;
     if(i>=sequence.length) clearInterval(interval);
   }, speed);
 }
 
-buttons.forEach(btn => {
-  btn.addEventListener('touchstart',()=>{ handleInput(btn.dataset.key); });
-  btn.addEventListener('click',()=>{ handleInput(btn.dataset.key); });
-});
-
+// manejar input del jugador
 function handleInput(key){
-  // reproducir sonido
   sounds[key].currentTime = 0;
   sounds[key].play();
 
@@ -197,21 +189,34 @@ function handleInput(key){
   if(userInput[userInput.length-1] !== sequence[userInput.length-1]){
     payasitaHead.classList.add('shake');
     setTimeout(()=>payasitaHead.classList.remove('shake'),400);
-    setTimeout(()=>nextRound(),1000);
+    userInput = [];
+    sequence = [];
+    addStep();
+    setTimeout(()=>playSequence(), 800);
   } else if(userInput.length === sequence.length){
+    // acierto
     payasitaHead.classList.add('dance');
     camaramanBody.classList.add('dance');
     setTimeout(()=>{
       payasitaHead.classList.remove('dance');
       camaramanBody.classList.remove('dance');
-      nextRound();
+      userInput = [];
+      addStep();
+      playSequence();
     },600);
   }
 }
 
-// iniciar juego
-nextRound();
-</script>
+// eventos táctiles y click
+buttons.forEach(btn => {
+  btn.addEventListener('touchstart',()=>{ handleInput(btn.dataset.key); });
+  btn.addEventListener('click',()=>{ handleInput(btn.dataset.key); });
+});
 
+// iniciar juego
+addStep();
+playSequence();
+
+</script>
 </body>
 </html>
