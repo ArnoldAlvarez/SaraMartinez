@@ -129,9 +129,18 @@ const maxSteps = 20;
 const payasitaHead = document.getElementById('payasita-head');
 const camaramanBody = document.querySelector('#camaraman .body');
 const buttons = document.querySelectorAll('.button');
-
 const music = document.getElementById('music');
-music.play().catch(()=>{}); // iniciar música
+
+// Sonidos por tecla
+const sounds = {
+  A: new Audio('https://freesound.org/data/previews/341/341695_6244410-lq.mp3'),
+  S: new Audio('https://freesound.org/data/previews/341/341696_6244410-lq.mp3'),
+  D: new Audio('https://freesound.org/data/previews/341/341697_6244410-lq.mp3'),
+  F: new Audio('https://freesound.org/data/previews/341/341698_6244410-lq.mp3')
+};
+
+// Iniciar música al cargar
+music.play().catch(()=>{});
 
 function nextRound() {
   userInput = [];
@@ -145,14 +154,17 @@ function nextRound() {
 
 function playSequence() {
   let i=0;
-  const baseSpeed = 1000; // ms entre pasos
-  const speed = baseSpeed; // más lento para que se vea bien al inicio
+  const baseSpeed = 1000;
+  const speed = baseSpeed;
 
   const interval = setInterval(()=>{
     const key = sequence[i];
     const btn = document.querySelector(`.button[data-key="${key}"]`);
     btn.classList.add('active');
     payasitaHead.classList.add('dance');
+    // sonido del paso
+    sounds[key].currentTime = 0;
+    sounds[key].play();
     setTimeout(()=>{
       btn.classList.remove('active');
       payasitaHead.classList.remove('dance');
@@ -163,15 +175,15 @@ function playSequence() {
 }
 
 buttons.forEach(btn => {
-  btn.addEventListener('touchstart',()=>{
-    handleInput(btn.dataset.key);
-  });
-  btn.addEventListener('click',()=>{
-    handleInput(btn.dataset.key);
-  });
+  btn.addEventListener('touchstart',()=>{ handleInput(btn.dataset.key); });
+  btn.addEventListener('click',()=>{ handleInput(btn.dataset.key); });
 });
 
 function handleInput(key){
+  // reproducir sonido
+  sounds[key].currentTime = 0;
+  sounds[key].play();
+
   const btn = document.querySelector(`.button[data-key="${key}"]`);
   btn.classList.add('active');
   camaramanBody.classList.add('dance');
