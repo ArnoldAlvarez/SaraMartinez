@@ -1,440 +1,157 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RSTV Social Dance</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: #111;
-      color: #fff;
-      overflow-x: hidden;
-      display: flex;
-    }
+<meta charset="UTF-8">
+<title>Baile de Memoria - Payasita vs Camaraman</title>
+<style>
+body {
+  background: linear-gradient(180deg, #ff8c00, #ff0066);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-family: sans-serif;
+  color: #fff;
+}
 
-    /* ======= MENÚ LATERAL ======= */
-    .sidebar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 220px;
-      height: 100%;
-      background: #1e1e1e;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-top: 40px;
-      border-right: 3px solid #ff4081;
-      transition: transform 0.3s ease;
-      z-index: 1000;
-    }
+h1 {
+  margin-bottom: 20px;
+}
 
-    .sidebar h2 {
-      color: #ff4081;
-      margin-bottom: 30px;
-    }
+.game {
+  display: flex;
+  gap: 100px;
+  align-items: flex-end;
+}
 
-    .sidebar a {
-      text-decoration: none;
-      color: #fff;
-      background: #333;
-      padding: 12px 20px;
-      margin: 8px 0;
-      border-radius: 10px;
-      width: 80%;
-      text-align: center;
-      transition: 0.3s;
-      font-weight: 600;
-    }
+.character {
+  width: 120px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
 
-    .sidebar a:hover {
-      background: #ff4081;
-      color: #fff;
-      transform: scale(1.05);
-    }
+.character .body {
+  width: 80px;
+  height: 150px;
+  border-radius: 20px;
+  background-color: yellow;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2em;
+  transition: transform 0.3s;
+}
 
-    /* ======= CONTENIDO ======= */
-    main {
-      margin-left: 220px;
-      width: calc(100% - 220px);
-      transition: margin-left 0.3s ease;
-    }
+.character .head {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: pink;
+  margin-bottom: 10px;
+  transition: transform 0.3s;
+}
 
-    section {
-      min-height: 100vh;
-      padding: 80px 25px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-    }
+.dance {
+  transform: translateY(-20px) rotate(-5deg);
+}
 
-    section:nth-child(odd) { background: #222; }
-    section:nth-child(even) { background: #111; }
+.shake {
+  transform: rotate(20deg);
+}
 
-    h1 {
-      font-size: 2.5em;
-      color: #ff4081;
-      margin-bottom: 15px;
-    }
+.controls {
+  margin-top: 20px;
+}
 
-    p {
-      max-width: 600px;
-      color: #ddd;
-      line-height: 1.6;
-      font-size: 1.1em;
-    }
-
-    /* ======= BOTÓN HAMBURGUESA ======= */
-    .menu-toggle {
-      display: none;
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      background: #ff4081;
-      border: none;
-      color: white;
-      padding: 10px 15px;
-      font-size: 22px;
-      border-radius: 8px;
-      z-index: 1100;
-      cursor: pointer;
-    }
-
-    /* ======= RESPONSIVE ======= */
-    @media (max-width: 768px) {
-      .sidebar {
-        transform: translateX(-100%);
-      }
-
-      .sidebar.active {
-        transform: translateX(0);
-      }
-
-      .menu-toggle {
-        display: block;
-      }
-
-      main {
-        margin-left: 0;
-        width: 100%;
-      }
-    }
-  </style>
+p {
+  font-size: 18px;
+}
+</style>
 </head>
 <body>
 
-  <!-- Botón para abrir/cerrar menú en móvil -->
-  <button class="menu-toggle">☰</button>
+<h1>Baile de Memoria</h1>
 
-  <!-- Menú lateral -->
-  <div class="sidebar">
-    <h2>RSTV</h2>
-    <a href="#inicio">Inicio</a>
-    <a href="#coreografias">Coreografías</a>
-    <a href="#bailes">Bailes</a>
-    <a href="#juego">Juego</a>
-    <a href="#nosotros">Nosotros</a>
+<div class="game">
+  <div class="character" id="payasita">
+    <div class="head" id="payasita-head"></div>
+    <div class="body">🤡</div>
   </div>
 
-  <!-- Contenido principal -->
-  <main>
-    <section id="inicio">
-      <h1>Bienvenido a RSTV Social Dance</h1>
-      <p>Donde el ritmo, el arte y la comunidad se unen 💃🕺</p>
-    </section>
-
-    <section id="coreografias">
-      <h1>Coreografías</h1>
-      <p>Aquí puedes pegar el menú desplegable de coreografías.</p>
-      <!-- 🔽 Pega tu menú desplegable aquí -->
-      <style>
-    /* ---------- ESTILOS BASE ---------- */
-    body {
-      font-family: "Poppins", sans-serif;
-      margin: 0;
-      background: linear-gradient(135deg, #000, #1a1a1a, #0d0d0d);
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-      padding: 20px;
-    }
-
-    .menu-container {
-      width: 100%;
-      max-width: 900px;
-      background: rgba(0, 0, 0, 0.85);
-      border-radius: 14px;
-      box-shadow: 0 0 25px rgba(255, 215, 100, 0.15);
-      border: 1px solid rgba(255, 215, 100, 0.25);
-      overflow: hidden;
-    }
-
-    /* ---------- LOGO Y TÍTULO ---------- */
-    .logo-section {
-      text-align: center;
-      padding: 25px 15px 10px;
-      background: linear-gradient(180deg, #0a0a0a, #111);
-      border-bottom: 1px solid rgba(255, 215, 100, 0.15);
-    }
-
-    .logo-text {
-      font-size: 1.8rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      background: linear-gradient(90deg, #d4af37, #b8860b, #c5a74e);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      position: relative;
-      display: inline-block;
-      letter-spacing: 1.5px;
-      animation: shine 6s linear infinite;
-    }
-
-    @keyframes shine {
-      0% { background-position: -200px 0; }
-      100% { background-position: 200px 0; }
-    }
-
-    .logo-sub {
-      font-size: 1rem;
-      color: #c5a74e;
-      letter-spacing: 1px;
-      margin-top: 5px;
-      opacity: 0.9;
-    }
-
-    h2 {
-      text-align: center;
-      padding: 15px;
-      margin: 0;
-      background: linear-gradient(90deg, #d4af37, #b8860b, #d4af37);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      font-size: 1.4rem;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-    }
-
-    /* ---------- MENÚ ---------- */
-    .menu-item {
-      border-top: 1px solid rgba(255, 215, 100, 0.15);
-    }
-
-    .menu-header {
-      position: sticky;
-      top: 0;
-      background: linear-gradient(90deg, #000, #141414, #000);
-      padding: 15px 20px;
-      cursor: pointer;
-      color: #d4af37;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      z-index: 2;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .menu-header:hover {
-      background: linear-gradient(90deg, #d4af37, #b8860b, #000);
-      color: #000;
-    }
-
-    .arrow {
-      transition: transform 0.3s ease;
-    }
-
-    /* ---------- CONTENIDO DESPLEGABLE ---------- */
-    .menu-content {
-      display: none;
-      background: rgba(0, 0, 0, 0.95);
-      overflow-y: auto;
-      max-height: 80vh;
-      padding: 10px;
-    }
-
-    .menu-content iframe {
-      width: 100%;
-      min-height: 600px;
-      border: none;
-      border-radius: 10px;
-      background: #000;
-    }
-
-    /* ---------- CUANDO SE ABRE ---------- */
-    .active .menu-content {
-      display: block;
-      animation: fadeIn 0.4s ease;
-    }
-
-    .active .arrow {
-      transform: rotate(180deg);
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ---------- SCROLL DORADO ---------- */
-    .menu-content::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    .menu-content::-webkit-scrollbar-thumb {
-      background: linear-gradient(180deg, #b8860b, #d4af37);
-      border-radius: 4px;
-    }
-
-    .menu-content::-webkit-scrollbar-track {
-      background: #111;
-    }
-
-    /* ---------- RESPONSIVE ---------- */
-    @media (max-width: 600px) {
-      .menu-container {
-        width: 95%;
-        border-radius: 10px;
-      }
-
-      .logo-text {
-        font-size: 1.4rem;
-      }
-
-      h2 {
-        font-size: 1.1rem;
-      }
-
-      .menu-header {
-        font-size: 0.9rem;
-      }
-
-      .menu-content iframe {
-        min-height: 480px;
-      }
-    }
-
-    @media (orientation: landscape) and (max-height: 500px) {
-      .menu-content iframe {
-        min-height: 400px;
-      }
-    }
-  </style>
-</head>
-<body>
-
-  <div class="menu-container">
-    <!-- Logo -->
-    <div class="logo-section">
-      <div class="logo-text">RSTV Social Dance</div>
-      <div class="logo-sub">Movimiento, Ritmo y Estilo</div>
-    </div>
-
-    <h2>🎬 Mis Videos de Instagram</h2>
-
-    <!-- VIDEO 1 -->
-    <div class="menu-item">
-      <div class="menu-header">
-        <span>Tropiflow en acción</span>
-        <span class="arrow">▼</span>
-      </div>
-      <div class="menu-content">
-        <iframe src="https://www.instagram.com/p/XXXXXXXX/embed" allowfullscreen></iframe>
-      </div>
-    </div>
-
-    <!-- VIDEO 2 -->
-    <div class="menu-item">
-      <div class="menu-header">
-        <span>Baile Social Dance</span>
-        <span class="arrow">▼</span>
-      </div>
-      <div class="menu-content">
-        <iframe src="https://www.instagram.com/p/YYYYYYYY/embed" allowfullscreen></iframe>
-      </div>
-    </div>
-
-    <!-- VIDEO 3 -->
-    <div class="menu-item">
-      <div class="menu-header">
-        <span>Barrio Flow Dorado</span>
-        <span class="arrow">▼</span>
-      </div>
-      <div class="menu-content">
-        <iframe src="https://www.instagram.com/p/ZZZZZZZZ/embed" allowfullscreen></iframe>
-      </div>
-    </div>
-
+  <div class="character" id="camaraman">
+    <div class="head" id="camaraman-head"></div>
+    <div class="body">📹</div>
   </div>
+</div>
 
-  <script>
-    // Control del despliegue del menú
-    const headers = document.querySelectorAll('.menu-header');
+<div class="controls">
+  <p>Presiona las teclas: A S D F</p>
+</div>
 
-    headers.forEach(header => {
-      header.addEventListener('click', () => {
-        const item = header.parentElement;
-        const isActive = item.classList.contains('active');
+<script>
+const moves = ['A', 'S', 'D', 'F'];
+let sequence = [];
+let userInput = [];
+const maxSteps = 20;
 
-        // Cierra todos los demás
-        document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+const payasitaHead = document.getElementById('payasita-head');
+const camaramanBody = document.querySelector('#camaraman .body');
 
-        // Abre el actual si no estaba activo
-        if (!isActive) item.classList.add('active');
-      });
-    });
-  </script>
+function nextRound() {
+  userInput = [];
+  if(sequence.length < maxSteps) {
+    sequence.push(moves[Math.floor(Math.random() * moves.length)]);
+  }
+  playSequence();
+}
 
-      <div id="menu-coreografias"></div>
-    </section>
+function playSequence() {
+  let i = 0;
+  const interval = setInterval(() => {
+    // Payasita baila
+    payasitaHead.classList.add('dance');
+    setTimeout(() => payasitaHead.classList.remove('dance'), 400);
+    i++;
+    if(i >= sequence.length) clearInterval(interval);
+  }, 700);
+}
 
-    <section id="bailes">
-      <h1>Bailes</h1>
-      <p>Explora nuestros estilos más populares, desde salsa y bachata hasta cumbia urbana.</p>
-    </section>
+document.addEventListener('keydown', (e) => {
+  const key = e.key.toUpperCase();
+  if(!moves.includes(key)) return;
 
-    <section id="juego">
-      <h1>Juego</h1>
-      <p>Pega aquí tu juego de baile interactivo.</p>
-      <!-- 🔽 Pega tu juego aquí -->
-      <div id="contenedor-juego" style="margin-top:20px; width:100%; height:500px; background:#000; border:2px dashed #ff4081;">
-        <!-- Juego irá aquí -->
-      </div>
-    </section>
+  // Camaraman imita
+  camaramanBody.classList.add('dance');
+  setTimeout(() => camaramanBody.classList.remove('dance'), 400);
 
-    <section id="nosotros">
-      <h1>Nosotros</h1>
-      <p>Somos RSTV Social Dance: pasión, energía y comunidad en cada paso.</p>
-    </section>
-  </main>
+  userInput.push(key);
 
-  <script>
-    // Desplazamiento suave
-    document.querySelectorAll('.sidebar a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
-          behavior: 'smooth'
-        });
-        if (window.innerWidth <= 768) {
-          document.querySelector('.sidebar').classList.remove('active');
-        }
-      });
-    });
+  // Verificar error
+  if(userInput[userInput.length-1] !== sequence[userInput.length-1]) {
+    // Payasita niega con la cabeza
+    payasitaHead.classList.add('shake');
+    setTimeout(() => payasitaHead.classList.remove('shake'), 400);
+    setTimeout(() => nextRound(), 1000); // reinicia con patrón actual
+  } else if(userInput.length === sequence.length) {
+    // Acertó toda la secuencia
+    // Celebración simple: ambos saltan
+    payasitaHead.classList.add('dance');
+    camaramanBody.classList.add('dance');
+    setTimeout(() => {
+      payasitaHead.classList.remove('dance');
+      camaramanBody.classList.remove('dance');
+      nextRound();
+    }, 600);
+  }
+});
 
-    // Activar menú móvil
-    document.querySelector('.menu-toggle').addEventListener('click', () => {
-      document.querySelector('.sidebar').classList.toggle('active');
-    });
-  </script>
+// Iniciar juego
+nextRound();
+</script>
 
 </body>
 </html>
