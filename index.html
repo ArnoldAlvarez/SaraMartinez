@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Baile de Memoria Móvil</title>
+<title>Baile de Memoria con Sprites</title>
 <style>
 body {
   margin: 0;
@@ -26,38 +26,10 @@ h1 { margin-bottom: 10px; }
   margin-bottom: 20px;
 }
 
-.character {
+.character img {
   width: 120px;
-  height: 200px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
+  height: auto;
 }
-
-.character .body {
-  width: 80px;
-  height: 150px;
-  border-radius: 20px;
-  background-color: yellow;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2em;
-  transition: transform 0.3s;
-}
-
-.character .head {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background-color: pink;
-  margin-bottom: 10px;
-  transition: transform 0.3s;
-}
-
-.dance { transform: translateY(-20px) rotate(-5deg); }
-.shake { transform: rotate(20deg); }
 
 .controls {
   display: flex;
@@ -91,13 +63,11 @@ h1 { margin-bottom: 10px; }
 <h1>Baile de Memoria</h1>
 
 <div class="game">
-  <div class="character" id="payasita">
-    <div class="head" id="payasita-head"></div>
-    <div class="body">🤡</div>
+  <div class="character">
+    <img id="payasita-sprite" src="sprites/payasita_1.png">
   </div>
-  <div class="character" id="camaraman">
-    <div class="head" id="camaraman-head"></div>
-    <div class="body">📹</div>
+  <div class="character">
+    <img id="camaraman-sprite" src="sprites/camaraman_1.png">
   </div>
 </div>
 
@@ -114,11 +84,13 @@ h1 { margin-bottom: 10px; }
 const moves = ['A','S','D','F'];
 let sequence = [];
 let userInput = [];
-const payasitaHead = document.getElementById('payasita-head');
-const camaramanBody = document.querySelector('#camaraman .body');
+
+const payasitaSprite = document.getElementById('payasita-sprite');
+const camaramanSprite = document.getElementById('camaraman-sprite');
 const buttons = document.querySelectorAll('.button');
 const music = document.getElementById('music');
 
+// sonidos por tecla
 const sounds = {
   A: new Audio('https://freesound.org/data/previews/341/341695_6244410-lq.mp3'),
   S: new Audio('https://freesound.org/data/previews/341/341696_6244410-lq.mp3'),
@@ -136,75 +108,99 @@ function startMusic(){
   }
 }
 
+// sprites frames
+const payasitaFrames = [
+  "sprites/payasita_1.png",
+  "sprites/payasita_2.png",
+  "sprites/payasita_3.png",
+  "sprites/payasita_4.png"
+];
+
+const camaramanFrames = [
+  "sprites/camaraman_1.png",
+  "sprites/camaraman_2.png",
+  "sprites/camaraman_3.png",
+  "sprites/camaraman_4.png"
+];
+
+// animar sprite
+function animateSprite(sprite, frames, times=1, interval=200){
+  let i=0, count=0;
+  const anim = setInterval(()=>{
+    sprite.src = frames[i];
+    i++;
+    if(i >= frames.length){ 
+      i=0; 
+      count++;
+      if(count >= times) clearInterval(anim);
+    }
+  }, interval);
+}
+
 // generar siguiente paso
 function addStep() {
   const key = moves[Math.floor(Math.random()*moves.length)];
   sequence.push(key);
 }
 
-// mostrar secuencia
+// mostrar secuencia (payasita baila)
 function playSequence() {
   let i=0;
   const speed = 1000;
+
   const interval = setInterval(()=>{
     const key = sequence[i];
     const btn = document.querySelector(`.button[data-key="${key}"]`);
     btn.classList.add('active');
-    payasitaHead.classList.add('dance');
+    animateSprite(payasitaSprite, payasitaFrames, 1, 200);
     sounds[key].currentTime = 0;
     sounds[key].play();
-    setTimeout(()=>{
-      btn.classList.remove('active');
-      payasitaHead.classList.remove('dance');
-    },400);
+
+    setTimeout(()=>{ btn.classList.remove('active'); }, 400);
+
     i++;
     if(i>=sequence.length) clearInterval(interval);
   }, speed);
 }
 
-// manejar input
+// manejar input del jugador
 function handleInput(key){
-  startMusic(); // iniciar música en primer toque
+  startMusic();
   sounds[key].currentTime = 0;
   sounds[key].play();
 
   const btn = document.querySelector(`.button[data-key="${key}"]`);
   btn.classList.add('active');
-  camaramanBody.classList.add('dance');
-  setTimeout(()=>{
-    btn.classList.remove('active');
-    camaramanBody.classList.remove('dance');
-  },400);
+  animateSprite(camaramanSprite, camaramanFrames, 1, 200);
+
+  setTimeout(()=>{ btn.classList.remove('active'); }, 400);
 
   userInput.push(key);
 
   if(userInput[userInput.length-1] !== sequence[userInput.length-1]){
-    payasitaHead.classList.add('shake');
-    setTimeout(()=>payasitaHead.classList.remove('shake'),400);
+    animateSprite(payasitaSprite, [payasitaFrames[3]], 1, 200); // error
     userInput = [];
     sequence = [];
     addStep();
     setTimeout(()=>playSequence(), 800);
   } else if(userInput.length === sequence.length){
-    payasitaHead.classList.add('dance');
-    camaramanBody.classList.add('dance');
+    animateSprite(payasitaSprite, payasitaFrames, 1, 200);
+    animateSprite(camaramanSprite, camaramanFrames, 1, 200);
     setTimeout(()=>{
-      payasitaHead.classList.remove('dance');
-      camaramanBody.classList.remove('dance');
       userInput = [];
       addStep();
       playSequence();
-    },600);
+    }, 600);
   }
 }
 
-// eventos
+// eventos táctiles y click
 buttons.forEach(btn => {
   btn.addEventListener('touchstart',()=>{ handleInput(btn.dataset.key); });
   btn.addEventListener('click',()=>{ handleInput(btn.dataset.key); });
 });
 
-// iniciar juego con 1 paso
+// iniciar juego
 addStep();
 playSequence();
 
