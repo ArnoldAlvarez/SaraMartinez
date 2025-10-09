@@ -17,9 +17,7 @@ body {
   color: #fff;
 }
 
-h1 {
-  margin-bottom: 10px;
-}
+h1 { margin-bottom: 10px; }
 
 .game {
   display: flex;
@@ -58,13 +56,8 @@ h1 {
   transition: transform 0.3s;
 }
 
-.dance {
-  transform: translateY(-20px) rotate(-5deg);
-}
-
-.shake {
-  transform: rotate(20deg);
-}
+.dance { transform: translateY(-20px) rotate(-5deg); }
+.shake { transform: rotate(20deg); }
 
 .controls {
   display: flex;
@@ -102,7 +95,6 @@ h1 {
     <div class="head" id="payasita-head"></div>
     <div class="body">🤡</div>
   </div>
-
   <div class="character" id="camaraman">
     <div class="head" id="camaraman-head"></div>
     <div class="body">📹</div>
@@ -116,20 +108,17 @@ h1 {
   <div class="button" data-key="F">F</div>
 </div>
 
-<!-- Música de fondo -->
 <audio id="music" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" loop></audio>
 
 <script>
 const moves = ['A','S','D','F'];
 let sequence = [];
 let userInput = [];
-
 const payasitaHead = document.getElementById('payasita-head');
 const camaramanBody = document.querySelector('#camaraman .body');
 const buttons = document.querySelectorAll('.button');
 const music = document.getElementById('music');
 
-// Sonidos por tecla
 const sounds = {
   A: new Audio('https://freesound.org/data/previews/341/341695_6244410-lq.mp3'),
   S: new Audio('https://freesound.org/data/previews/341/341696_6244410-lq.mp3'),
@@ -137,8 +126,15 @@ const sounds = {
   F: new Audio('https://freesound.org/data/previews/341/341698_6244410-lq.mp3')
 };
 
-// iniciar música
-music.play().catch(()=>{});
+let musicStarted = false;
+
+// iniciar música al primer toque
+function startMusic(){
+  if(!musicStarted){
+    music.play().catch(()=>{});
+    musicStarted = true;
+  }
+}
 
 // generar siguiente paso
 function addStep() {
@@ -149,30 +145,26 @@ function addStep() {
 // mostrar secuencia
 function playSequence() {
   let i=0;
-  const speed = 1000; // ms entre pasos
-
+  const speed = 1000;
   const interval = setInterval(()=>{
     const key = sequence[i];
     const btn = document.querySelector(`.button[data-key="${key}"]`);
     btn.classList.add('active');
     payasitaHead.classList.add('dance');
-
-    // reproducir sonido
     sounds[key].currentTime = 0;
     sounds[key].play();
-
     setTimeout(()=>{
       btn.classList.remove('active');
       payasitaHead.classList.remove('dance');
     },400);
-
     i++;
     if(i>=sequence.length) clearInterval(interval);
   }, speed);
 }
 
-// manejar input del jugador
+// manejar input
 function handleInput(key){
+  startMusic(); // iniciar música en primer toque
   sounds[key].currentTime = 0;
   sounds[key].play();
 
@@ -194,7 +186,6 @@ function handleInput(key){
     addStep();
     setTimeout(()=>playSequence(), 800);
   } else if(userInput.length === sequence.length){
-    // acierto
     payasitaHead.classList.add('dance');
     camaramanBody.classList.add('dance');
     setTimeout(()=>{
@@ -207,13 +198,13 @@ function handleInput(key){
   }
 }
 
-// eventos táctiles y click
+// eventos
 buttons.forEach(btn => {
   btn.addEventListener('touchstart',()=>{ handleInput(btn.dataset.key); });
   btn.addEventListener('click',()=>{ handleInput(btn.dataset.key); });
 });
 
-// iniciar juego
+// iniciar juego con 1 paso
 addStep();
 playSequence();
 
