@@ -2,9 +2,11 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Baile de Memoria - Payasita vs Camaraman</title>
+<title>Baile de Memoria Móvil</title>
 <style>
 body {
+  margin: 0;
+  padding: 0;
   background: linear-gradient(180deg, #ff8c00, #ff0066);
   display: flex;
   flex-direction: column;
@@ -16,13 +18,14 @@ body {
 }
 
 h1 {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .game {
   display: flex;
-  gap: 100px;
+  gap: 50px;
   align-items: flex-end;
+  margin-bottom: 20px;
 }
 
 .character {
@@ -64,11 +67,29 @@ h1 {
 }
 
 .controls {
-  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
-p {
-  font-size: 18px;
+.button {
+  width: 70px;
+  height: 70px;
+  border-radius: 15px;
+  background-color: #444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  user-select: none;
+  transition: transform 0.1s, background-color 0.2s;
+}
+
+.button.active {
+  transform: scale(1.2);
+  background-color: #fff;
+  color: #000;
 }
 </style>
 </head>
@@ -89,67 +110,88 @@ p {
 </div>
 
 <div class="controls">
-  <p>Presiona las teclas: A S D F</p>
+  <div class="button" data-key="A">A</div>
+  <div class="button" data-key="S">S</div>
+  <div class="button" data-key="D">D</div>
+  <div class="button" data-key="F">F</div>
 </div>
 
 <script>
-const moves = ['A', 'S', 'D', 'F'];
+const moves = ['A','S','D','F'];
 let sequence = [];
 let userInput = [];
 const maxSteps = 20;
 
 const payasitaHead = document.getElementById('payasita-head');
 const camaramanBody = document.querySelector('#camaraman .body');
+const buttons = document.querySelectorAll('.button');
 
 function nextRound() {
   userInput = [];
-  if(sequence.length < maxSteps) {
-    sequence.push(moves[Math.floor(Math.random() * moves.length)]);
+  if(sequence.length < maxSteps){
+    sequence.push(moves[Math.floor(Math.random()*moves.length)]);
   }
   playSequence();
 }
 
 function playSequence() {
-  let i = 0;
-  const interval = setInterval(() => {
-    // Payasita baila
+  let i=0;
+  const interval = setInterval(()=>{
+    const key = sequence[i];
+    // iluminar botón correspondiente
+    const btn = document.querySelector(`.button[data-key="${key}"]`);
+    btn.classList.add('active');
+    // animación payasita
     payasitaHead.classList.add('dance');
-    setTimeout(() => payasitaHead.classList.remove('dance'), 400);
+    setTimeout(()=>{
+      btn.classList.remove('active');
+      payasitaHead.classList.remove('dance');
+    },400);
     i++;
-    if(i >= sequence.length) clearInterval(interval);
-  }, 700);
+    if(i>=sequence.length) clearInterval(interval);
+  },700);
 }
 
-document.addEventListener('keydown', (e) => {
-  const key = e.key.toUpperCase();
-  if(!moves.includes(key)) return;
+// Manejo de botones táctiles
+buttons.forEach(btn => {
+  btn.addEventListener('touchstart',()=>{
+    handleInput(btn.dataset.key);
+  });
+  btn.addEventListener('click',()=>{ // también funciona en desktop
+    handleInput(btn.dataset.key);
+  });
+});
 
-  // Camaraman imita
+function handleInput(key){
+  // animación camaraman
+  const btn = document.querySelector(`.button[data-key="${key}"]`);
+  btn.classList.add('active');
   camaramanBody.classList.add('dance');
-  setTimeout(() => camaramanBody.classList.remove('dance'), 400);
+  setTimeout(()=>{
+    btn.classList.remove('active');
+    camaramanBody.classList.remove('dance');
+  },400);
 
   userInput.push(key);
 
-  // Verificar error
-  if(userInput[userInput.length-1] !== sequence[userInput.length-1]) {
-    // Payasita niega con la cabeza
+  // verificar error
+  if(userInput[userInput.length-1] !== sequence[userInput.length-1]){
     payasitaHead.classList.add('shake');
-    setTimeout(() => payasitaHead.classList.remove('shake'), 400);
-    setTimeout(() => nextRound(), 1000); // reinicia con patrón actual
-  } else if(userInput.length === sequence.length) {
-    // Acertó toda la secuencia
-    // Celebración simple: ambos saltan
+    setTimeout(()=>payasitaHead.classList.remove('shake'),400);
+    setTimeout(()=>nextRound(),1000);
+  } else if(userInput.length === sequence.length){
+    // acierto toda la secuencia
     payasitaHead.classList.add('dance');
     camaramanBody.classList.add('dance');
-    setTimeout(() => {
+    setTimeout(()=>{
       payasitaHead.classList.remove('dance');
       camaramanBody.classList.remove('dance');
       nextRound();
-    }, 600);
+    },600);
   }
-});
+}
 
-// Iniciar juego
+// iniciar juego
 nextRound();
 </script>
 
